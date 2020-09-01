@@ -6,7 +6,10 @@
 # on:
 #   push:
 #     branches: [ master ]
-#   pull_request:
+      - uses: actions/upload-artifact@master
+        with:
+          name: webpack artifacts
+          path: public/
 #     branches: [ master ]
 
 # jobs:
