@@ -6,10 +6,6 @@
 # on:
 #   push:
 #     branches: [ master ]
-      - uses: actions/upload-artifact@master
-        with:
-    needs: build
-          path: public/
 #     branches: [ master ]
 
 # jobs:
@@ -22,10 +18,7 @@
 #         os: [ubuntu-latest, windows-2016]
 #         node-version: [12.x, 14.x]
 
-    - uses: actions/download-artifact@master
-      with:
-        name: webpack artifacts
-        path: public
+
     - name: npm install, and test
 #     - uses: actions/checkout@v2
 #     - name: Use Node.js ${{ matrix.node-version }}
@@ -42,16 +35,17 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: npm install and build webpack
         run: |
           npm install
           npm run build
-
+      - uses: actions/upload-artifact@master
+        with:
+          name: webpack artifacts
+          path: public/
   test:
 
     runs-on: ubuntu-latest
@@ -63,6 +57,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/download-artifact@master
+      with: 
+        name: webpack artifacts
+        path: public
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -71,5 +69,9 @@ jobs:
       run: |
         npm install
         npm test
+    - uses: actions/download-artifact@master
+      with:
+        name: webpack artifacts
+        path: public/
       env:
         CI: true
